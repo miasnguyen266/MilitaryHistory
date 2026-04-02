@@ -32,6 +32,18 @@ const ACTION_LABEL = {
   3: "delete",
 };
 
+const ACTION_MAP = {
+  add: 1,
+  edit: 2,
+  delete: 3,
+};
+
+const TYPE_MAP = {
+  event: 1,
+  figure: 2,
+  period: 3,
+};
+
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const { token, logout } = useAuth();

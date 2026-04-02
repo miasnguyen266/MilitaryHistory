@@ -4,6 +4,17 @@ const pool = require("../config/db");
 const auth = require("../middleware/auth");
 const fs = require("fs");
 const path = require("path");
+const ACTION_MAP = {
+  add: 1,
+  edit: 2,
+  delete: 3,
+};
+
+const TYPE_MAP = {
+  event: 1,
+  figure: 2,
+  period: 3,
+};
 
 router.use(auth);
 
@@ -52,8 +63,8 @@ router.post("/", async (req, res) => {
 
     // Log hoạt động
     await pool.query(
-      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES ('event', 'add', ?, ?)`,
-      [newId, title_vi || "Sự kiện mới"],
+      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES (?, ?, ?, ?)`,
+      [TYPE_MAP.event, ACTION_MAP.add, newId, title_vi || "Sự kiện mới"],
     );
 
     res.json({ message: "Thêm sự kiện thành công", insertId: newId });
@@ -114,8 +125,8 @@ router.put("/:id", async (req, res) => {
 
     // Log hoạt động
     await pool.query(
-      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES ('event', 'edit', ?, ?)`,
-      [id, title_vi || "Sự kiện đã sửa"],
+      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES (?, ?, ?, ?)`,
+      [TYPE_MAP.event, ACTION_MAP.edit, id, title_vi || "Sự kiện đã sửa"],
     );
 
     res.json({ message: "Cập nhật sự kiện thành công" });
@@ -148,8 +159,8 @@ router.delete("/:id", async (req, res) => {
 
     // Log hoạt động
     await pool.query(
-      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES ('event', 'delete', ?, ?)`,
-      [id, old[0].title_vi || "Sự kiện đã xóa"],
+      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES (?, ?, ?, ?)`,
+      [TYPE_MAP.event, ACTION_MAP.delete, id, old[0].title_vi || "Sự kiện đã xóa"],
     );
 
     res.json({ message: "Xóa sự kiện thành công" });

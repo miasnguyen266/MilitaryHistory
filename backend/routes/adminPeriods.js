@@ -4,6 +4,17 @@ const pool = require("../config/db");
 const auth = require("../middleware/auth");
 const fs = require("fs");
 const path = require("path");
+const ACTION_MAP = {
+  add: 1,
+  edit: 2,
+  delete: 3,
+};
+
+const TYPE_MAP = {
+  event: 1,
+  figure: 2,
+  period: 3,
+};
 
 router.use(auth);
 
@@ -49,8 +60,8 @@ router.post("/", async (req, res) => {
     const newId = result.insertId;
 
     await pool.query(
-      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES ('period', 'add', ?, ?)`,
-      [newId, period_name_vi || "Thời kỳ mới"],
+      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES (?, ?, ?, ?)`,
+      [TYPE_MAP.period, ACTION_MAP.add, newId, period_name_vi || "Thời kỳ mới"],
     );
 
     res.json({ message: "Thêm thời kỳ thành công", insertId: newId });
@@ -102,8 +113,8 @@ router.put("/:id", async (req, res) => {
     );
 
     await pool.query(
-      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES ('period', 'edit', ?, ?)`,
-      [id, period_name_vi || "Thời kỳ đã sửa"],
+      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES (?, ?, ?, ?)`,
+      [TYPE_MAP.period, ACTION_MAP.edit, id, period_name_vi || "Thời kỳ đã sửa"],
     );
 
     res.json({ message: "Cập nhật thời kỳ thành công" });
@@ -133,8 +144,8 @@ router.delete("/:id", async (req, res) => {
     await pool.query("DELETE FROM HistoryPeriods WHERE id = ?", [id]);
 
     await pool.query(
-      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES ('period', 'delete', ?, ?)`,
-      [id, old[0].period_name_vi || "Thời kỳ đã xóa"],
+      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES (?, ?, ?, ?)`,
+      [TYPE_MAP.period, ACTION_MAP.delete, id, old[0].period_name_vi || "Thời kỳ đã xóa"],
     );
 
     res.json({ message: "Xóa thời kỳ thành công" });
