@@ -5,38 +5,54 @@ const auth = require("../middleware/auth");
 
 router.use(auth); // Bảo vệ tất cả route dashboard
 
-// ==================== THỐNG KÊ SỐ LẦN THÊM/SỬA/XÓA ====================
+const ACTION_MAP = {
+  add: 1,
+  edit: 2,
+  delete: 3,
+}
+
+const TYPE_MAP = {
+  event: 1,
+  figure: 2,
+  period: 3,
+}
+
 router.get("/stats", async (req, res) => {
   try {
-    const [events] = await pool.query(`
+    const [rows] = await pool.query(
+      `
       SELECT 
-        SUM(CASE WHEN action = 'add' THEN 1 ELSE 0 END) as add_count,
-        SUM(CASE WHEN action = 'edit' THEN 1 ELSE 0 END) as edit_count,
-        SUM(CASE WHEN action = 'delete' THEN 1 ELSE 0 END) as delete_count
-      FROM AdminLogs WHERE type = 'events'
-    `);
+        type,
+        COALESCE(SUM(CASE WHEN action = ? THEN 1 ELSE 0 END), 0) as add_count,
+        COALESCE(SUM(CASE WHEN action = ? THEN 1 ELSE 0 END), 0) as edit_count,
+        COALESCE(SUM(CASE WHEN action = ? THEN 1 ELSE 0 END), 0) as delete_count
+      FROM AdminLogs
+      WHERE type IN (?, ?, ?)
+      GROUP BY type
+      `,
+      [
+        ACTION_MAP.add,
+        ACTION_MAP.edit,
+        ACTION_MAP.delete,
+        TYPE_MAP.event,
+        TYPE_MAP.figure,
+        TYPE_MAP.period,
+      ],
+    );
 
-    const [figures] = await pool.query(`
-      SELECT 
-        SUM(CASE WHEN action = 'add' THEN 1 ELSE 0 END) as add_count,
-        SUM(CASE WHEN action = 'edit' THEN 1 ELSE 0 END) as edit_count,
-        SUM(CASE WHEN action = 'delete' THEN 1 ELSE 0 END) as delete_count
-      FROM AdminLogs WHERE type = 'figures'
-    `);
+    const result = {
+      events: { add_count: 0, edit_count: 0, delete_count: 0 },
+      figures: { add_count: 0, edit_count: 0, delete_count: 0 },
+      periods: { add_count: 0, edit_count: 0, delete_count: 0 },
+    };
 
-    const [periods] = await pool.query(`
-      SELECT 
-        SUM(CASE WHEN action = 'add' THEN 1 ELSE 0 END) as add_count,
-        SUM(CASE WHEN action = 'edit' THEN 1 ELSE 0 END) as edit_count,
-        SUM(CASE WHEN action = 'delete' THEN 1 ELSE 0 END) as delete_count
-      FROM AdminLogs WHERE type = 'periods'
-    `);
-
-    res.json({
-      events: events[0],
-      figures: figures[0],
-      periods: periods[0],
+    rows.forEach((row) => {
+      if (row.type === TYPE_MAP.event) result.events = row;
+      if (row.type === TYPE_MAP.figure) result.figures = row;
+      if (row.type === TYPE_MAP.period) result.periods = row;
     });
+
+    res.json(result);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Lỗi lấy thống kê" });
@@ -53,14 +69,14 @@ router.get("/chart", async (req, res) => {
 
   switch (filter) {
     case "week":
-      groupBy = "YEARWEEK(created_at, 1)"; // Tuần bắt đầu từ Thứ 2
-      dateFormat = "Tuần %x%v"; // Năm + số tuần
-      orderBy = "YEARWEEK(created_at, 1) ASC";
+     groupBy = "YEARWEEK(created_at, 1)";
+     orderBy = "YEARWEEK(created_at, 1) ASC";
+     dateFormat = "Tuần %v (%Y)";
       break;
     case "month":
-      groupBy = "DATE_FORMAT(created_at, '%Y-%m')";
-      dateFormat = "%Y-%m"; // Năm-tháng
-      orderBy = "DATE_FORMAT(created_at, '%Y-%m') ASC";
+      groupBy = "YEAR(created_at), MONTH(created_at)";
+      orderBy = "YEAR(created_at), MONTH(created_at) ASC";
+      dateFormat = "%Y-%m";
       break;
     case "day":
     default:
@@ -74,15 +90,15 @@ router.get("/chart", async (req, res) => {
       `
       SELECT 
         DATE_FORMAT(MIN(created_at), ?) AS label,
-        SUM(CASE WHEN type = 'event' THEN 1 ELSE 0 END) AS events,
-        SUM(CASE WHEN type = 'figure' THEN 1 ELSE 0 END) AS figures,
-        SUM(CASE WHEN type = 'period' THEN 1 ELSE 0 END) AS periods
+        SUM(CASE WHEN type = ? THEN 1 ELSE 0 END) AS events,
+        SUM(CASE WHEN type = ? THEN 1 ELSE 0 END) AS figures,
+        SUM(CASE WHEN type = ? THEN 1 ELSE 0 END) AS periods
       FROM AdminLogs
       GROUP BY ${groupBy}
       ORDER BY ${orderBy}
       LIMIT 30
     `,
-      [dateFormat],
+      [dateFormat, TYPE_MAP.event, TYPE_MAP.figure, TYPE_MAP.period],
     );
 
     // Xử lý dữ liệu an toàn
@@ -126,7 +142,13 @@ router.get("/recent-activities", async (req, res) => {
 
     const formatted = activities.map((act) => ({
       type: act.action,
-      item: `${act.type === "event" ? "Sự kiện" : act.type === "figure" ? "Nhân vật" : "Thời kỳ"}: ${act.item_name}`,
+      item: `${
+        act.type === TYPE_MAP.event
+          ? "Sự kiện"
+          : act.type === TYPE_MAP.figure
+            ? "Nhân vật"
+            : "Thời kỳ"
+      }: ${act.item_name}`,
       time: act.time,
     }));
 

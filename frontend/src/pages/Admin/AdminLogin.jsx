@@ -32,7 +32,7 @@ export default function AdminLogin() {
       toast.success("Đăng nhập thành công!");
       navigate("/admin/dashboard", { replace: true });
     } catch (err) {
-      toast.error("Sai tài khoản hoặc mật khẩu");
+      toast.error(err ? err : "Sai tài khoản hoặc mật khẩu");
     } finally {
       setLoading(false);
     }

@@ -13,8 +13,9 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext";
 
-// Đăng ký Chart.js
+// Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -24,14 +25,23 @@ ChartJS.register(
   Legend,
 );
 
+// 🔥 map action number -> string
+const ACTION_LABEL = {
+  1: "add",
+  2: "edit",
+  3: "delete",
+};
+
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [timeFilter, setTimeFilter] = useState("day"); // day, week, month
+  const { token, logout } = useAuth();
+
+  const [timeFilter, setTimeFilter] = useState("day");
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [stats, setStats] = useState({
-    events: { add: 0, edit: 0, delete: 0 },
-    figures: { add: 0, edit: 0, delete: 0 },
-    periods: { add: 0, edit: 0, delete: 0 },
+    events: { add_count: 0, edit_count: 0, delete_count: 0 },
+    figures: { add_count: 0, edit_count: 0, delete_count: 0 },
+    periods: { add_count: 0, edit_count: 0, delete_count: 0 },
   });
   const [recentActivities, setRecentActivities] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,33 +51,31 @@ export default function AdminDashboard() {
   const activitiesPerPage = 5;
 
   useEffect(() => {
+    if (!token) return;
     fetchDashboardData();
-  }, [timeFilter]);
+  }, [timeFilter, token]);
 
   const fetchDashboardData = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const token = localStorage.getItem("adminToken");
-      if (!token) {
-        throw new Error("Không có token đăng nhập");
-      }
-
       const config = {
         headers: { Authorization: `Bearer ${token}` },
       };
 
-      // 1. Thống kê thêm/sửa/xóa
+      // 1. Stats
       const statsRes = await axios.get("/api/admin/stats", config);
       setStats(statsRes.data);
 
-      // 2. Dữ liệu biểu đồ theo filter
+      // 2. Chart
       const chartRes = await axios.get(
         `/api/admin/chart?filter=${timeFilter}`,
         config,
       );
+
       const chart = chartRes.data;
+
       setChartData({
         labels: chart.labels,
         datasets: [
@@ -95,34 +103,38 @@ export default function AdminDashboard() {
         ],
       });
 
-      // 3. Hoạt động mới nhất
+      // 3. Activities
       const activitiesRes = await axios.get(
         "/api/admin/recent-activities",
         config,
       );
-      setRecentActivities(activitiesRes.data);
+
+      // 🔥 convert action number -> string
+      const formatted = activitiesRes.data.map((act) => ({
+        ...act,
+        type: ACTION_LABEL[act.type] || "delete",
+      }));
+
+      setRecentActivities(formatted);
     } catch (err) {
       console.error("Lỗi fetch dashboard:", err);
 
-      if (err.response?.status === 401 || err.message.includes("token")) {
-        localStorage.removeItem("adminToken");
-        toast.error("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!", {
-          duration: 4000,
-          icon: "⚠️",
-        });
+      if (err.response?.status === 401) {
+        logout();
+        toast.error("Phiên đăng nhập hết hạn!");
         navigate("/admin/login");
       } else {
         const errMsg =
           err.response?.data?.error || "Không thể tải dữ liệu dashboard";
         setError(errMsg);
-        toast.error(errMsg, { duration: 5000 });
+        toast.error(errMsg);
       }
     } finally {
       setLoading(false);
     }
   };
 
-  // Phân trang cho hoạt động mới nhất
+  // pagination
   const indexOfLast = currentPage * activitiesPerPage;
   const indexOfFirst = indexOfLast - activitiesPerPage;
   const currentActivities = recentActivities.slice(indexOfFirst, indexOfLast);
@@ -135,8 +147,6 @@ export default function AdminDashboard() {
 
   const renderPageNumbers = () => {
     const pages = [];
-    const maxShow = 5;
-
     let start = Math.max(1, currentPage - 2);
     let end = Math.min(totalPages, currentPage + 2);
 
@@ -161,7 +171,6 @@ export default function AdminDashboard() {
               ? "Tuần"
               : "Tháng"
         })`,
-        font: { size: 18 },
       },
     },
     scales: {
@@ -169,13 +178,11 @@ export default function AdminDashboard() {
     },
   };
 
-  if (loading) {
-    return (
-      <div className="text-center py-20 text-xl text-navy">
-        Đang tải dữ liệu...
-      </div>
-    );
-  }
+  if (loading)
+    return <div className="text-center py-20">Đang tải dữ liệu...</div>;
+
+  if (error)
+    return <div className="text-center py-20 text-red-600">{error}</div>;
 
   if (error) {
     return (
@@ -244,19 +251,19 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <p className="text-green-600 font-bold text-2xl">
-                    {stats.events.add}
+                    {stats.events.add_count}
                   </p>
                   <p className="text-sm text-gray-600">Thêm</p>
                 </div>
                 <div>
                   <p className="text-blue-600 font-bold text-2xl">
-                    {stats.events.edit}
+                    {stats.events.edit_count}
                   </p>
                   <p className="text-sm text-gray-600">Sửa</p>
                 </div>
                 <div>
                   <p className="text-red-600 font-bold text-2xl">
-                    {stats.events.delete}
+                    {stats.events.delete_count}
                   </p>
                   <p className="text-sm text-gray-600">Xóa</p>
                 </div>
@@ -270,19 +277,19 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <p className="text-green-600 font-bold text-2xl">
-                    {stats.figures.add}
+                    {stats.figures.add_count}
                   </p>
                   <p className="text-sm text-gray-600">Thêm</p>
                 </div>
                 <div>
                   <p className="text-blue-600 font-bold text-2xl">
-                    {stats.figures.edit}
+                    {stats.figures.edit_count}
                   </p>
                   <p className="text-sm text-gray-600">Sửa</p>
                 </div>
                 <div>
                   <p className="text-red-600 font-bold text-2xl">
-                    {stats.figures.delete}
+                    {stats.figures.delete_count}
                   </p>
                   <p className="text-sm text-gray-600">Xóa</p>
                 </div>
@@ -296,19 +303,19 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <p className="text-green-600 font-bold text-2xl">
-                    {stats.periods.add}
+                    {stats.periods.add_count}
                   </p>
                   <p className="text-sm text-gray-600">Thêm</p>
                 </div>
                 <div>
                   <p className="text-blue-600 font-bold text-2xl">
-                    {stats.periods.edit}
+                    {stats.periods.edit_count}
                   </p>
                   <p className="text-sm text-gray-600">Sửa</p>
                 </div>
                 <div>
                   <p className="text-red-600 font-bold text-2xl">
-                    {stats.periods.delete}
+                    {stats.periods.delete_count}
                   </p>
                   <p className="text-sm text-gray-600">Xóa</p>
                 </div>

@@ -26,7 +26,10 @@ import AdminLayout from "./layouts/AdminLayout";
 
 // Component bảo vệ route admin
 const ProtectedAdminRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) return null;
+
   return isAuthenticated ? children : <Navigate to="/admin/login" replace />;
 };
 
