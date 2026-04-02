@@ -9,13 +9,13 @@ const ACTION_MAP = {
   add: 1,
   edit: 2,
   delete: 3,
-}
+};
 
 const TYPE_MAP = {
   event: 1,
   figure: 2,
   period: 3,
-}
+};
 
 router.get("/stats", async (req, res) => {
   try {

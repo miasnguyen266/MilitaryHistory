@@ -160,7 +160,12 @@ router.delete("/:id", async (req, res) => {
     // Log hoạt động
     await pool.query(
       `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES (?, ?, ?, ?)`,
-      [TYPE_MAP.event, ACTION_MAP.delete, id, old[0].title_vi || "Sự kiện đã xóa"],
+      [
+        TYPE_MAP.event,
+        ACTION_MAP.delete,
+        id,
+        old[0].title_vi || "Sự kiện đã xóa",
+      ],
     );
 
     res.json({ message: "Xóa sự kiện thành công" });

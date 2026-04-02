@@ -124,7 +124,8 @@ export default function AdminDashboard() {
       // 🔥 convert action number -> string
       const formatted = activitiesRes.data.map((act) => ({
         ...act,
-        type: ACTION_LABEL[act.type] || "delete",
+        type: ACTION_LABEL[Number(act.type)] || "delete",
+        itemType: act.type,
       }));
 
       setRecentActivities(formatted);

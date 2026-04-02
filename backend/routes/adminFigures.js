@@ -4,6 +4,17 @@ const pool = require("../config/db");
 const auth = require("../middleware/auth");
 const fs = require("fs");
 const path = require("path");
+const ACTION_MAP = {
+  add: 1,
+  edit: 2,
+  delete: 3,
+};
+
+const TYPE_MAP = {
+  event: 1,
+  figure: 2,
+  period: 3,
+};
 
 router.use(auth);
 
@@ -54,7 +65,14 @@ router.post("/", async (req, res) => {
       ],
     );
 
-    res.json({ insertId: result.insertId });
+    const newId = result.insertId;
+
+    await pool.query(
+      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES (?, ?, ?, ?)`,
+      [TYPE_MAP.figure, ACTION_MAP.add, newId, full_name_vi || "Nhân vật mới"],
+    );
+
+    res.json({ message: "Thêm nhân vật thành công", insertId: newId });
   } catch (err) {
     res.status(500).json({ error: "Lỗi khi thêm" });
   }
@@ -117,11 +135,12 @@ router.put("/:id", async (req, res) => {
       [id],
     );
 
-    const oldImage = old[0]?.image_url;
+    const oldImageUrl = old[0]?.image_url;
 
-    if (image_url && oldImage && oldImage !== image_url) {
-      const oldPath = path.join(__dirname, "..", "public", oldImage);
-      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    let finalImageUrl = image_url;
+    if (image_url && oldImageUrl && oldImageUrl !== image_url) {
+      const oldFilePath = path.join(__dirname, "..", "public", oldImageUrl);
+      if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
     }
 
     await pool.query(
@@ -133,9 +152,14 @@ router.put("/:id", async (req, res) => {
         full_name_en,
         birth_year || null,
         death_year || null,
-        image_url || null,
+        finalImageUrl || null,
         id,
       ],
+    );
+
+    await pool.query(
+      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES (?, ?, ?, ?)`,
+      [TYPE_MAP.period, ACTION_MAP.edit, id, full_name_vi || "Nhân vật đẵ sửa"],
     );
 
     res.json({ message: "Updated" });
@@ -151,10 +175,37 @@ router.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    await pool.query("DELETE FROM HistoricalFigures WHERE id=?", [id]);
-    res.json({ message: "Deleted" });
+    const [old] = await pool.query(
+      "SELECT image_url, full_name_vi FROM HistoricalFigures WHERE id = ?",
+      [id],
+    );
+    if (old.length === 0)
+      return res.status(404).json({ error: "Không tìm thấy" });
+
+    const oldImageUrl = old[0].image_url;
+
+    // Xóa file ảnh cũ
+    if (oldImageUrl) {
+      const oldFilePath = path.join(__dirname, "..", "public", oldImageUrl);
+      if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
+    }
+
+    await pool.query("DELETE FROM HistoricalFigures  WHERE id = ?", [id]);
+
+    // Log hoạt động
+    await pool.query(
+      `INSERT INTO AdminLogs (type, action, item_id, item_name) VALUES (?, ?, ?, ?)`,
+      [
+        TYPE_MAP.event,
+        ACTION_MAP.delete,
+        id,
+        old[0].full_name_vi || "Nhân vật đã xóa",
+      ],
+    );
+
+    res.json({ message: "Xóa nhân vật thành công" });
   } catch (err) {
-    res.status(500).json({ error: "Lỗi delete" });
+    res.status(500).json({ error: "Lỗi khi xóa" });
   }
 });
 
