@@ -69,9 +69,9 @@ router.get("/chart", async (req, res) => {
 
   switch (filter) {
     case "week":
-     groupBy = "YEARWEEK(created_at, 1)";
-     orderBy = "YEARWEEK(created_at, 1) ASC";
-     dateFormat = "Tuần %v (%Y)";
+      groupBy = "YEARWEEK(created_at, 1)";
+      orderBy = "YEARWEEK(created_at, 1) ASC";
+      dateFormat = "Tuần %v (%Y)";
       break;
     case "month":
       groupBy = "YEAR(created_at), MONTH(created_at)";
