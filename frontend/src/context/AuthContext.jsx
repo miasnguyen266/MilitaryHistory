@@ -4,34 +4,52 @@ import { createContext, useContext, useState, useEffect } from "react";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true); // 🔥 thêm loading
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // 🔥 chạy 1 lần khi app load (fix F5)
   useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    setIsAuthenticated(!!token);
-    setLoading(false); // 🔥 xong check
+    const storedToken = localStorage.getItem("adminToken");
+
+    setToken(storedToken); // null hoặc token đều OK
+    setLoading(false);
   }, []);
 
-  const login = (token) => {
-    localStorage.setItem("adminToken", token);
-    setIsAuthenticated(true);
+  // 🔥 login đúng
+  const login = (newToken) => {
+    localStorage.setItem("adminToken", newToken);
+    setToken(newToken);
   };
 
+  // 🔥 logout chuẩn
   const logout = () => {
     localStorage.removeItem("adminToken");
-    setIsAuthenticated(false);
+    setToken(null);
   };
 
+  // 🔥 derive state (không cần set riêng)
+  const isAuthenticated = !!token;
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{
+        token,
+        isAuthenticated,
+        login,
+        logout,
+        loading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
+// hook
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within AuthProvider");
+  if (!context) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
   return context;
 };
