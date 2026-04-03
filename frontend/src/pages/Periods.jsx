@@ -11,29 +11,44 @@ export default function Periods() {
   const [periods, setPeriods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const limit = 6; // Số thời kỳ mỗi trang (có thể thay đổi)
+  const itemsPerPage = 8; // Số thời kỳ mỗi trang (có thể thay đổi)
 
   const lang = i18n.language;
 
   useEffect(() => {
     const fetchPeriods = async () => {
-      setLoading(true);
       try {
-        const res = await axios.get(`/api/periods?page=${page}&limit=${limit}`);
-        setPeriods(res.data.periods || res.data); // tùy backend trả về
-        setTotalPages(
-          res.data.totalPages || Math.ceil(res.data.length / limit),
-        );
+        setLoading(true);
+        setError(null);
+
+        const res = await axios.get("/api/periods", {
+          params: {
+            page: currentPage,
+            limit: itemsPerPage,
+          },
+        });
+
+        const data = res.data;
+
+        const perriodsList = data.periods || data.data || data || [];
+        const safeData = Array.isArray(perriodsList) ? perriodsList : [];
+
+        setPeriods(safeData);
+        setTotalPages(res.data.totalPages || 1);
+        console.log("Dữ liệu thời kỳ:", safeData); // tùy backend trả về
       } catch (err) {
+        console.error("Lỗi tải thời kỳ:", err);
         setError(t("error") || "Có lỗi xảy ra khi tải dữ liệu");
+        setPeriods([]);
+        setTotalPages(1);
       } finally {
         setLoading(false);
       }
     };
     fetchPeriods();
-  }, [page, t]);
+  }, [currentPage, t]);
 
   const handleClick = (id) => {
     navigate(`/period/${id}`);
@@ -41,7 +56,7 @@ export default function Periods() {
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
-      setPage(newPage);
+      setCurrentPage(newPage);
       window.scrollTo({ top: 0, behavior: "smooth" }); // cuộn lên đầu khi chuyển trang
     }
   };
@@ -59,7 +74,7 @@ export default function Periods() {
 
   return (
     <div className="py-16 px-4 bg-gray-100 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-screen-2xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold text-center text-navy mb-12">
           {t("nav.periods") || "Các thời kỳ lịch sử"}
         </h1>
@@ -70,7 +85,7 @@ export default function Periods() {
             {t("periods.no_results") || "Chưa có thời kỳ nào"}
           </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
             {periods.map((period, index) => {
               const name =
                 lang === "en" ? period.period_name_en : period.period_name_vi;
@@ -85,7 +100,7 @@ export default function Periods() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition cursor-pointer border border-gray-200"
+                  className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition cursor-pointer border border-gray-400"
                   onClick={() => handleClick(period.id)}
                 >
                   <h2 className="text-2xl font-semibold text-navy mb-2">
@@ -110,10 +125,10 @@ export default function Periods() {
         {totalPages > 1 && (
           <div className="mt-12 flex justify-center items-center gap-6">
             <button
-              onClick={() => handlePageChange(page - 1)}
-              disabled={page === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
               className={`px-8 py-4 rounded-xl font-bold transition ${
-                page === 1
+                currentPage === 1
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                   : "bg-[#c8102e] text-white hover:bg-[#a00d25]"
               }`}
@@ -122,14 +137,14 @@ export default function Periods() {
             </button>
 
             <span className="text-xl font-medium text-gray-800">
-              Trang {page} / {totalPages}
+              Trang {currentPage} / {totalPages}
             </span>
 
             <button
-              onClick={() => handlePageChange(page + 1)}
-              disabled={page === totalPages}
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
               className={`px-8 py-4 rounded-xl font-bold transition ${
-                page === totalPages
+                currentPage === totalPages
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                   : "bg-[#c8102e] text-white hover:bg-[#a00d25]"
               }`}

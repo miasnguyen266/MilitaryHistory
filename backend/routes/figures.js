@@ -4,24 +4,38 @@ const pool = require("../config/db");
 
 // Lấy danh sách nhân vật với phân trang
 router.get("/", async (req, res) => {
-  const { page = 1, limit = 8 } = req.query;
-  const offset = (page - 1) * limit;
-
   try {
+    let { page = 1, limit = 8 } = req.query;
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    if (page < 1) page = 1;
+    if (limit < 1) limit = 8;
+
+    const offset = (page - 1) * limit;
+
+    // Query danh sách
     const [figures] = await pool.query(
-      "SELECT * FROM HistoricalFigures LIMIT ? OFFSET ?",
-      [parseInt(limit), offset],
+      `
+      SELECT *
+      FROM HistoricalFigures
+      ORDER BY id DESC
+      LIMIT ? OFFSET ?
+      `,
+      [limit, offset],
     );
 
+    // Query tổng số
     const [[{ total }]] = await pool.query(
-      "SELECT COUNT(*) as total FROM HistoricalFigures",
+      `SELECT COUNT(*) as total FROM HistoricalFigures`,
     );
 
     res.json({
       figures,
-      totalPages: Math.ceil(total / limit),
-      currentPage: parseInt(page),
       total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
     });
   } catch (err) {
     console.error("Lỗi lấy danh sách nhân vật:", err.message);
@@ -29,16 +43,24 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Lấy nội dung theo ngôn ngữ
 router.get("/contents/:id/:lang", async (req, res) => {
   const { id, lang } = req.params;
+
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM HistoricalFigureContents WHERE figure_id = ? AND lang = ?",
+      `
+      SELECT *
+      FROM HistoricalFigureContents
+      WHERE figure_id = ? AND lang = ?
+      `,
       [id, lang],
     );
+
     if (rows.length === 0) {
       return res.status(404).json({ error: "Không tìm thấy nội dung" });
     }
+
     res.json(rows[0]);
   } catch (err) {
     console.error("Lỗi lấy nội dung nhân vật:", err.message);

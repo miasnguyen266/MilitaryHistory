@@ -4,13 +4,19 @@ const pool = require("../config/db");
 
 // Lấy danh sách thời kỳ với phân trang
 router.get("/", async (req, res) => {
-  const { page = 1, limit = 6 } = req.query;
+  let { page = 1, limit = 8 } = req.query;
+
+  // ✅ FIX
+  page = parseInt(page);
+  limit = parseInt(limit);
+
   const offset = (page - 1) * limit;
 
   try {
     const [periods] = await pool.query(
-      "SELECT * FROM HistoryPeriods LIMIT ? OFFSET ?",
-      [parseInt(limit), offset],
+      // ✅ FIX thêm ORDER BY
+      "SELECT * FROM HistoryPeriods ORDER BY id DESC LIMIT ? OFFSET ?",
+      [limit, offset],
     );
 
     const [[{ total }]] = await pool.query(
@@ -19,8 +25,8 @@ router.get("/", async (req, res) => {
 
     res.json({
       periods,
-      totalPages: Math.ceil(total / limit),
-      currentPage: parseInt(page),
+      totalPages: Math.ceil(total / limit), // ✅ giờ đúng
+      currentPage: page,
       total,
     });
   } catch (err) {

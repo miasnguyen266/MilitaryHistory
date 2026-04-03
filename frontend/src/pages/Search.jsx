@@ -15,11 +15,12 @@ export default function Search() {
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const limit = 9;
+  const limit = 10;
 
   const lang = i18n.language;
 
   useEffect(() => {
+    setPage(1);
     if (!query.trim()) {
       setLoading(false);
       setResults([]);
@@ -37,6 +38,7 @@ export default function Search() {
         setResults(res.data.results || res.data || []);
         setTotalPages(res.data.totalPages || 1);
       } catch (err) {
+        console.error("Lỗi tìm kiếm:", err);
         setError(t("search.error"));
         setResults([]);
         setTotalPages(1);
@@ -77,7 +79,7 @@ export default function Search() {
 
   return (
     <div className="min-h-screen py-16 px-4 bg-gray-100">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-screen-2xl   mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold text-center text-navy mb-8">
           {t("search.results_for")}{" "}
           <span className="text-primary">"{query || "..."}"</span>
@@ -100,7 +102,7 @@ export default function Search() {
               {t("search.items_found")} (trang {page}/{totalPages})
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
               {results.map((item, idx) => {
                 const isEvent = item.type === "event";
                 const isFigure = item.type === "figure";
@@ -242,14 +244,4 @@ export default function Search() {
       </div>
     </div>
   );
-}
-
-function getPageNumbers() {
-  const max = 5;
-  const pages = [];
-  let start = Math.max(1, page - Math.floor(max / 2));
-  let end = Math.min(totalPages, start + max - 1);
-  if (end - start + 1 < max) start = Math.max(1, end - max + 1);
-  for (let i = start; i <= end; i++) pages.push(i);
-  return pages;
 }

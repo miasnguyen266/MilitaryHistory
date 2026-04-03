@@ -63,6 +63,8 @@ const resources = {
       title: "Một số hình ảnh về mô hình khí tài",
       back: "Quay lại",
       present: "nay",
+      previous: "Trước",
+      next: "Sau",
     },
   },
 
@@ -127,6 +129,8 @@ const resources = {
       title: "Some images of military models",
       back: "Back",
       present: "present",
+      previous: "previous",
+      next: "next",
     },
   },
 };

@@ -60,48 +60,48 @@ export default function FigureDetail() {
           ← {t("back")}
         </button>
 
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Ảnh nhân vật - giữ nguyên hình dạng */}
-          {figure.image_url && (
-            <div className="md:w-1/3 flex justify-center md:justify-start">
-              <img
-                src={figure.image_url}
-                alt={name}
-                className="max-w-full h-auto rounded-xl shadow-lg object-contain border border-gray-200" // object-contain + max-w-full để giữ nguyên hình
-              />
-            </div>
-          )}
+        {/* Thông tin chính */}
+        <div>
+          {/* Title */}
+          <h1 className="text-3xl md:text-4xl font-bold text-navy mb-2">
+            {name}
+          </h1>
 
-          {/* Thông tin chính */}
-          <div className="md:w-2/3">
-            <h1 className="text-3xl md:text-4xl font-bold text-navy mb-4">
-              {name}
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">{time}</p>
+          {/* Year */}
+          <p className="text-lg text-gray-500 mb-6">{time}</p>
 
-            {/* Tiểu sử chi tiết */}
-            <div className="prose prose-lg max-w-none text-gray-800 leading-relaxed">
-              <h2 className="text-2xl font-semibold text-navy mb-4">
-                {lang === "en" ? "Biography" : "Tiểu sử"}
-              </h2>
-              <p className="mb-6 whitespace-pre-wrap">
-                {content.bio ||
-                  (lang === "en"
-                    ? "No biography available"
-                    : "Không có tiểu sử chi tiết")}
-              </p>
+          {/* Content + ảnh float */}
+          <div className="text-gray-800 leading-relaxed text-justify">
+            {figure.image_url && (
+              <figure className="float-left w-full sm:w-[260px] mr-6 mb-4">
+                <img
+                  src={figure.image_url}
+                  alt={name}
+                  className="w-full rounded-lg border border-gray-300 shadow-sm object-contain bg-white p-1"
+                />
+                <figcaption className="text-sm text-gray-500 italic mt-2 text-center">
+                  {name}
+                </figcaption>
+              </figure>
+            )}
 
-              {/* Đóng góp lịch sử */}
-              <h2 className="text-2xl font-semibold text-navy mb-4">
-                {lang === "en" ? "Contributions" : "Đóng góp"}
-              </h2>
-              <p className="whitespace-pre-wrap">
-                {content.contributions ||
-                  (lang === "en"
-                    ? "No contributions available"
-                    : "Không có thông tin đóng góp")}
-              </p>
-            </div>
+            <h2 className="text-2xl font-semibold text-navy mb-4">
+              {lang === "en" ? "Biography" : "Tiểu sử"}
+            </h2>
+
+            <p className="mb-6 whitespace-pre-wrap break-words">
+              {content.bio || "Không có tiểu sử"}
+            </p>
+
+            <h2 className="text-2xl font-semibold text-navy mb-4">
+              {lang === "en" ? "Contributions" : "Đóng góp"}
+            </h2>
+
+            <p className="whitespace-pre-wrap break-words">
+              {content.contributions || "Không có thông tin"}
+            </p>
+
+            <div className="clear-both"></div>
           </div>
         </div>
       </div>
