@@ -124,7 +124,13 @@ router.get("/chart", async (req, res) => {
 // ==================== HOẠT ĐỘNG MỚI NHẤT ====================
 router.get("/recent-activities", async (req, res) => {
   try {
-    const [activities] = await pool.query(`
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 5;
+    const offset = (page - 1) * limit;
+
+    // Lấy data
+    const [activities] = await pool.query(
+      `
       SELECT 
         type,
         action,
@@ -137,7 +143,14 @@ router.get("/recent-activities", async (req, res) => {
           END) as time
       FROM AdminLogs
       ORDER BY created_at DESC
-      LIMIT 10
+      LIMIT ? OFFSET ?
+      `,
+      [limit, offset],
+    );
+
+    // Lấy tổng số bản ghi
+    const [[{ total }]] = await pool.query(`
+      SELECT COUNT(*) as total FROM AdminLogs
     `);
 
     const formatted = activities.map((act) => ({
@@ -152,7 +165,10 @@ router.get("/recent-activities", async (req, res) => {
       time: act.time,
     }));
 
-    res.json(formatted);
+    res.json({
+      data: formatted,
+      total,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Lỗi lấy hoạt động mới nhất" });

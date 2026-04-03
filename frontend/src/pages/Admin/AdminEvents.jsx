@@ -18,6 +18,8 @@ export default function AdminEvents() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const eventsPerPage = 5;
 
   // Ref để reset input file khi xóa ảnh
   const fileInputRef = useRef(null);
@@ -25,9 +27,19 @@ export default function AdminEvents() {
   useEffect(() => {
     fetchEvents();
   }, []);
+  const indexOfLast = currentPage * eventsPerPage;
+  const indexOfFirst = indexOfLast - eventsPerPage;
+  const currentEvents = events.slice(indexOfFirst, indexOfLast);
+
+  const totalPages = Math.ceil(events.length / eventsPerPage);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
+  const nextPage = () =>
+    currentPage < totalPages && setCurrentPage(currentPage + 1);
 
   const fetchEvents = async () => {
     setLoading(true);
+    setCurrentPage(1);
     try {
       const res = await axios.get("/api/admin/events", {
         headers: {
@@ -61,6 +73,7 @@ export default function AdminEvents() {
       setFormData({ ...formData, image_url: res.data.image_url });
       toast.success("Upload ảnh thành công!");
     } catch (err) {
+      console.error("Lỗi upload:", err);
       toast.error("Upload ảnh thất bại");
     }
   };
@@ -97,6 +110,7 @@ export default function AdminEvents() {
       fetchEvents();
       resetForm();
     } catch (err) {
+      console.error("Lỗi lưu sự kiện:", err);
       toast.error("Lưu thất bại");
     }
   };
@@ -113,6 +127,7 @@ export default function AdminEvents() {
       toast.success("Xóa sự kiện thành công!");
       fetchEvents();
     } catch (err) {
+      console.error("Lỗi xóa sự kiện;", err);
       toast.error("Xóa thất bại");
     }
   };
@@ -306,7 +321,7 @@ export default function AdminEvents() {
             </tr>
           </thead>
           <tbody>
-            {events.map((event) => (
+            {currentEvents.map((event) => (
               <tr key={event.id} className="border-t hover:bg-gray-50">
                 <td className="p-5 font-medium">{event.event_year}</td>
                 <td className="p-5">{event.year_display_vi}</td>
@@ -340,6 +355,46 @@ export default function AdminEvents() {
             ))}
           </tbody>
         </table>
+        {totalPages > 1 && (
+          <div className="py-6 flex justify-center items-center gap-2 flex-wrap">
+            <button
+              onClick={prevPage}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 rounded ${
+                currentPage === 1
+                  ? "bg-gray-200 text-gray-400"
+                  : "bg-primary text-white"
+              }`}
+            >
+              ← Prev
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => paginate(page)}
+                className={`px-4 py-2 rounded ${
+                  page === currentPage ? "bg-primary text-white" : "bg-gray-200"
+                }`}
+                disabled={page === "..."}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              onClick={nextPage}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 rounded ${
+                currentPage === totalPages
+                  ? "bg-gray-200 text-gray-400"
+                  : "bg-primary text-white"
+              }`}
+            >
+              Next →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

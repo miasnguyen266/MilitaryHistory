@@ -17,6 +17,8 @@ export default function AdminPeriods() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const periodsPerPage = 5;
 
   // Ref để reset input file khi xóa ảnh
   const fileInputRef = useRef(null);
@@ -25,8 +27,20 @@ export default function AdminPeriods() {
     fetchPeriods();
   }, []);
 
+  const indexOfLast = currentPage * periodsPerPage;
+  const indexOfFirst = indexOfLast - periodsPerPage;
+  const currentPeriods = periods.slice(indexOfFirst, indexOfLast);
+
+  const totalPages = Math.ceil(periods.length / periodsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
+  const nextPage = () =>
+    currentPage < totalPages && setCurrentPage(currentPage + 1);
+
   const fetchPeriods = async () => {
     setLoading(true);
+    setCurrentPage(1);
     try {
       const res = await axios.get("/api/admin/periods", {
         headers: {
@@ -60,6 +74,7 @@ export default function AdminPeriods() {
       setFormData({ ...formData, image_url: res.data.image_url });
       toast.success("Upload ảnh thành công!");
     } catch (err) {
+      console.error("Lỗi upload:", err);
       toast.error("Upload ảnh thất bại");
     }
   };
@@ -282,7 +297,7 @@ export default function AdminPeriods() {
             </tr>
           </thead>
           <tbody>
-            {periods.map((period) => (
+            {currentPeriods.map((period) => (
               <tr key={period.id} className="border-t hover:bg-gray-50">
                 <td className="p-5">{period.period_name_vi}</td>
                 <td className="p-5">
@@ -317,6 +332,46 @@ export default function AdminPeriods() {
             ))}
           </tbody>
         </table>
+        {totalPages > 1 && (
+          <div className="py-6 flex justify-center items-center gap-2 flex-wrap">
+            <button
+              onClick={prevPage}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 rounded ${
+                currentPage === 1
+                  ? "bg-gray-200 text-gray-400"
+                  : "bg-primary text-white"
+              }`}
+            >
+              ← Trước
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => paginate(page)}
+                className={`px-4 py-2 rounded ${
+                  page === currentPage ? "bg-primary text-white" : "bg-gray-200"
+                }`}
+                disabled={page === "..."}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              onClick={nextPage}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 rounded ${
+                currentPage === totalPages
+                  ? "bg-gray-200 text-gray-400"
+                  : "bg-primary text-white"
+              }`}
+            >
+              Sau →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

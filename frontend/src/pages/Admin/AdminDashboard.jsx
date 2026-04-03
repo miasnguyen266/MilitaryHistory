@@ -56,16 +56,19 @@ export default function AdminDashboard() {
     periods: { add_count: 0, edit_count: 0, delete_count: 0 },
   });
   const [recentActivities, setRecentActivities] = useState([]);
+  const [loadingActivities, setLoadingActivities] = useState(false);
+  const [totalActivities, setTotalActivities] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [animate, setAnimate] = useState(false);
 
   const activitiesPerPage = 5;
 
   useEffect(() => {
     if (!token) return;
     fetchDashboardData();
-  }, [timeFilter, token]);
+  }, [timeFilter, token, currentPage]);
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -117,16 +120,19 @@ export default function AdminDashboard() {
 
       // 3. Activities
       const activitiesRes = await axios.get(
-        "/api/admin/recent-activities",
+        `/api/admin/recent-activities?page=${currentPage}&limit=5`,
         config,
       );
+      const rawData = activitiesRes.data.data;
 
-      // 🔥 convert action number -> string
-      const formatted = activitiesRes.data.map((act) => ({
+      const formatted = rawData.map((act) => ({
         ...act,
         type: ACTION_LABEL[Number(act.type)] || "delete",
         itemType: act.type,
       }));
+
+      setRecentActivities(formatted);
+      setTotalActivities(activitiesRes.data.total);
 
       setRecentActivities(formatted);
     } catch (err) {
@@ -143,17 +149,25 @@ export default function AdminDashboard() {
         toast.error(errMsg);
       }
     } finally {
+      setLoadingActivities(true);
+      setLoadingActivities(false);
       setLoading(false);
     }
   };
 
   // pagination
-  const indexOfLast = currentPage * activitiesPerPage;
-  const indexOfFirst = indexOfLast - activitiesPerPage;
-  const currentActivities = recentActivities.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(recentActivities.length / activitiesPerPage);
+  const currentActivities = recentActivities;
+  const totalPages = Math.ceil(totalActivities / activitiesPerPage);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber) => {
+    if (pageNumber === currentPage) return;
+
+    setAnimate(true);
+    setTimeout(() => {
+      setCurrentPage(pageNumber);
+      setAnimate(false);
+    }, 200); // thời gian fade out
+  };
   const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
   const nextPage = () =>
     currentPage < totalPages && setCurrentPage(currentPage + 1);
@@ -190,13 +204,6 @@ export default function AdminDashboard() {
       y: { beginAtZero: true },
     },
   };
-
-  if (loading)
-    return <div className="text-center py-20">Đang tải dữ liệu...</div>;
-
-  if (error)
-    return <div className="text-center py-20 text-red-600">{error}</div>;
-
   if (error) {
     return (
       <div className="text-center py-20 text-xl text-red-600">{error}</div>
@@ -344,8 +351,14 @@ export default function AdminDashboard() {
           Hoạt động mới nhất
         </h2>
 
-        {currentActivities.length > 0 ? (
-          <div className="space-y-4">
+        {loadingActivities ? (
+          <p className="text-center py-6 text-gray-500">Đang tải...</p>
+        ) : currentActivities.length > 0 ? (
+          <div
+            className={`space-y-4 transition-all duration-300 ${
+              animate ? "opacity-0 -translate-y-2" : "opacity-100 translate-y-0"
+            }`}
+          >
             {currentActivities.map((activity, index) => (
               <div
                 key={index}
@@ -384,14 +397,14 @@ export default function AdminDashboard() {
           <div className="mt-10 flex justify-center items-center gap-2 flex-wrap">
             <button
               onClick={prevPage}
-              disabled={currentPage === 1}
-              className={`px-5 py-2 rounded-lg font-medium transition ${
+              disabled={currentPage === 1 || animate}
+              className={`px-5 py-2 rounded-lg font-medium transition-all duration-300  ${
                 currentPage === 1
                   ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-primary text-white hover:bg-primary-dark"
+                  : "bg-primary text-white hover:bg-primary-dark active:scale-95 "
               }`}
             >
-              ← Prev
+              ← Trước
             </button>
 
             {renderPageNumbers().map((page, idx) => (
@@ -420,7 +433,7 @@ export default function AdminDashboard() {
                   : "bg-primary text-white hover:bg-primary-dark"
               }`}
             >
-              Next →
+              Sau →
             </button>
           </div>
         )}
