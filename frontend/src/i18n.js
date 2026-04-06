@@ -23,6 +23,7 @@ const resources = {
       "home.timeline.title": "Một số mốc son lịch sử",
       "home.timeline.view_all": "Xem toàn bộ dòng thời gian →",
       "artifactSlider.title": "Một số hình ảnh về mô hình khí tài",
+      "caroselVideo.title": "Video tư liệu về các chiến dịch",
       "artifactSlider.slides": [
         {
           image: "/images/khitai1.jpg",
