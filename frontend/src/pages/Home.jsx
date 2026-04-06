@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import axios from "axios";
 import ArtifactSlider from "../components/ArtifactSlider";
+import VideoCarousel from "../components/Caroselvideo/CaroselVideo";
 
 export default function Home() {
   const { t, i18n } = useTranslation();
@@ -253,6 +254,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <div className="mb-14">
+        <VideoCarousel />
+      </div>
     </div>
   );
 }
