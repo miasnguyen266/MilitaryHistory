@@ -90,6 +90,7 @@ const resources = {
       "home.timeline.view_all": "View full timeline →",
       // ==================== PHẦN MỚI: ARTIFACT SLIDER (ENGLISH) ====================
       "artifactSlider.title": "Some images of military models",
+      "caroselVideo.title": "Archival footage of the campaigns",
       "artifactSlider.slides": [
         {
           image: "/images/khitai1.jpg",
