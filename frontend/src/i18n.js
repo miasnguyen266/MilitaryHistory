@@ -22,26 +22,46 @@ const resources = {
         "Trải qua 81 năm xây dựng, chiến đấu và trưởng thành (1944-2025), Quân đội nhân dân Việt Nam đã khẳng định vững chắc vai trò là lực lượng nòng cốt trong sự nghiệp xây dựng và bảo vệ Tổ quốc; là lực lượng chính trị, quân sự trung thành, tin cậy của Đảng, Nhà nước và Nhân dân. Từ một đội quân ra đời trong điều kiện hết sức gian khó, với lực lượng nhỏ bé, vũ khí thô sơ, Quân đội ta đã không ngừng lớn mạnh, lập nên những chiến công hiển hách, làm nên sức mạnh Việt Nam trong thời đại Hồ Chí Minh.",
       "home.timeline.title": "Một số mốc son lịch sử",
       "home.timeline.view_all": "Xem toàn bộ dòng thời gian →",
-      "artifactSlider.title": "Một số hình ảnh về mô hình khí tài",
+      "artifactSlider.title": "Một số hình ảnh về mô hình khí tài, hiện vật",
       "caroselVideo.title": "Video tư liệu về các chiến dịch",
       "artifactSlider.slides": [
         {
           image: "/images/khitai1.jpg",
-          title: "Xe tăng T-54/55",
-          desc: "Mô hình xe tăng huyền thoại trong Chiến dịch Hồ Chí Minh",
+          title: "Máy bay tiêm kích MiG-17",
+          desc: "Mô hình máy bay huyền thoại trong các chiến dịch bầu trời bảo vệ miền Bắc",
         },
         {
           image: "/images/khitai2.jpg",
-          title: "Súng AK-47",
-          desc: "Vũ khí nổi tiếng đồng hành cùng bộ đội qua các cuộc kháng chiến",
+          title: "Xe tải quân sự ZiL-157",
+          desc: "Mô hình xe tải quân sự được Liên xô sản xuất, Viêt Nam sử dụng trong chiến dịch chống Mỹ 1965-1975",
         },
         {
           image: "/images/khitai3.jpg",
-          title: "Tàu ngầm lớp Kilo",
-          desc: "Hiện vật hiện đại của Hải quân Nhân dân Việt Nam",
+          title: "TPháo kéo 122mm D-30 howitzer",
+          desc: "Mô hình pháo kéo trong các chiến dịch Nam Lào(1971), Trị - Thiên, Hồ Chí Minh(1975)",
         },
         {
           image: "/images/khitai4.jpg",
+          title: "Xe tăng phòng không ZSU-57-2",
+          desc: "Mô hình xe tăng huyền thoại tham gia các chiến dịch Xuân(1975), Hồ Chí Minh",
+        },
+        {
+          image: "/images/khitai5.jpg",
+          title: "Máy bay Su-30MK2",
+          desc: "Mô hình máy bay chiến đấu bảo vệ bầu trời Tổ quốc",
+        },
+        {
+          image: "/images/khitai5.jpg",
+          title: "Máy bay Su-30MK2",
+          desc: "Mô hình máy bay chiến đấu bảo vệ bầu trời Tổ quốc",
+        },
+        {
+          image: "/images/khitai5.jpg",
+          title: "Máy bay Su-30MK2",
+          desc: "Mô hình máy bay chiến đấu bảo vệ bầu trời Tổ quốc",
+        },
+        {
+          image: "/images/khitai5.jpg",
           title: "Máy bay Su-30MK2",
           desc: "Mô hình máy bay chiến đấu bảo vệ bầu trời Tổ quốc",
         },
