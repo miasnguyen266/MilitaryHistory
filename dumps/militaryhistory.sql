@@ -58,6 +58,7 @@ CREATE TABLE `historicalfigurecontents` (
   `contributions` text COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_figure_lang` (`figure_id`,`lang`),
+  CONSTRAINT `fk_figure_content` FOREIGN KEY (`figure_id`) REFERENCES `historicalfigures` (`id`) ON DELETE CASCADE,
   CONSTRAINT `historicalfigurecontents_ibfk_1` FOREIGN KEY (`figure_id`) REFERENCES `historicalfigures` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -205,4 +206,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-06 22:45:29
+-- Dump completed on 2026-04-07 12:22:33
