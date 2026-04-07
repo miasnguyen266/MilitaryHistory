@@ -141,7 +141,10 @@ export default function Home() {
                     transition={{ delay: idx * 0.1 }}
                     viewport={{ once: true }}
                     className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-200 cursor-pointer group"
-                    onClick={() => navigate(`/event/${event.id}`)}
+                    onClick={() => {
+                      window.scrollTo({ top: 0, behavior: "instant" });
+                      navigate(`/event/${event.id}`);
+                    }}
                   >
                     {event.image_url && (
                       <img
@@ -174,7 +177,7 @@ export default function Home() {
           <div className="text-center mt-16">
             <Link
               to="/timeline"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={() => window.scrollTo({ top: 0, behavior: "instant" })}
               className="inline-block !bg-[#c8102e] !text-white px-12 py-6 rounded-full font-bold text-lg hover:!bg-[#a00d25] transition shadow-2xl"
             >
               {t("home.timeline.view_all")}
@@ -214,7 +217,10 @@ export default function Home() {
                     transition={{ delay: idx * 0.1 }}
                     viewport={{ once: true }}
                     className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-200 cursor-pointer group"
-                    onClick={() => navigate(`/figure/${figure.id}`)}
+                    onClick={() => {
+                      window.scrollTo({ top: 0, behavior: "instant" });
+                      navigate(`/figure/${figure.id}`);
+                    }}
                   >
                     {figure.image_url && (
                       <img
@@ -246,7 +252,7 @@ export default function Home() {
           <div className="text-center mt-16">
             <Link
               to="/figures"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={() => window.scrollTo({ top: 0, behavior: "instant" })}
               className="inline-block !bg-[#c8102e] !text-white px-12 py-6 rounded-full font-bold text-lg hover:!bg-[#a00d25] transition shadow-2xl"
             >
               {lang === "en"

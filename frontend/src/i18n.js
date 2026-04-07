@@ -37,7 +37,7 @@ const resources = {
         },
         {
           image: "/images/khitai3.jpg",
-          title: "TPháo kéo 122mm D-30 howitzer",
+          title: "Pháo kéo 122mm D-30 howitzer",
           desc: "Mô hình pháo kéo trong các chiến dịch Nam Lào(1971), Trị - Thiên, Hồ Chí Minh(1975)",
         },
         {
@@ -51,19 +51,29 @@ const resources = {
           desc: "Mô hình máy bay chiến đấu bảo vệ bầu trời Tổ quốc",
         },
         {
-          image: "/images/khitai5.jpg",
-          title: "Máy bay Su-30MK2",
-          desc: "Mô hình máy bay chiến đấu bảo vệ bầu trời Tổ quốc",
+          image: "/images/hienvat1.jpg",
+          title: "Súng trường, súng kíp",
+          desc: "Mô hình súng trường và súng kíp thu được của quân Nhật, Pháp(1975) ",
         },
         {
-          image: "/images/khitai5.jpg",
-          title: "Máy bay Su-30MK2",
-          desc: "Mô hình máy bay chiến đấu bảo vệ bầu trời Tổ quốc",
+          image: "/images/hienvat2.jpg",
+          title: "Súng trung liên Lewis",
+          desc: "Đại đội Nam tiến 'Phan Đình Phùng' sử dụng trong các trận đánh ở chiến trường Bình Thuận, 10/1945",
         },
         {
-          image: "/images/khitai5.jpg",
-          title: "Máy bay Su-30MK2",
-          desc: "Mô hình máy bay chiến đấu bảo vệ bầu trời Tổ quốc",
+          image: "/images/hienvat3.jpg",
+          title: "Nỏ liên châu(nó thần Kim Quy)",
+          desc: "Mô hình nỏ liên châu Gắn liền với truyền thuyết về An Dương Vương và thành Cổ Loa (thế kỷ III TCN). Đây được coi là loại vũ khí biểu tượng của nước Âu Lạc.",
+        },
+        {
+          image: "/images/hienvat4.jpg",
+          title: "Súng thần công",
+          desc: "Mô hình súng thần công này thuộc thời nhà Nguyễn (thế kỷ XIX). Phông nền phía sau mô tả về Trận Kinh thành Huế năm 1885 và cuộc kháng chiến chống Pháp.",
+        },
+        {
+          image: "/images/hienvat5.jpg",
+          title: "Xe Jeep quân sự Jeep M151",
+          desc: "Mô hình xe được sản xuất tại Mỹ, quân đội Việt Nam đã thu giữ và sử dụng làm chiến lợi phẩm trong chiến dịch giải phóng miền Nam năm 1975",
         },
       ],
 
@@ -114,23 +124,53 @@ const resources = {
       "artifactSlider.slides": [
         {
           image: "/images/khitai1.jpg",
-          title: "T-54/55 Tank",
-          desc: "Iconic tank model in the Ho Chi Minh Campaign",
+          title: "MiG-17 Fighter Aircraft",
+          desc: "A model of the legendary aircraft that played a key role in the air defence campaigns over the North",
         },
         {
           image: "/images/khitai2.jpg",
-          title: "AK-47 Rifle",
-          desc: "Famous weapon accompanying soldiers through resistance wars",
+          title: "ZiL-157 Military Truck",
+          desc: "A Soviet-manufactured military truck model used by Vietnam during the war against the United States from 1965 to 1975",
         },
         {
           image: "/images/khitai3.jpg",
-          title: "Kilo-class Submarine",
-          desc: "Modern equipment of the Vietnam People's Navy",
+          title: "122mm D-30 Towed Howitzer",
+          desc: "Model of the towed howitzer used in the campaigns in Southern Laos (1971), Tri - Thien, and Ho Chi Minh (1975)",
         },
         {
           image: "/images/khitai4.jpg",
-          title: "Su-30MK2 Fighter Jet",
-          desc: "Model of fighter aircraft protecting the nation's airspace",
+          title: "ZSU-57-2 Anti-Aircraft Tank",
+          desc: "A model of the legendary tank that took part in the Spring Campaign (1975) and the Ho Chi Minh Campaign.",
+        },
+        {
+          image: "/images/khitai5.jpg",
+          title: "Su-30MK2 Fighter Aircraft",
+          desc: "A model of the fighter aircraft defending the nation’s skies.",
+        },
+        {
+          image: "/images/hienvat1.jpg",
+          title: "Rifles and Submachine Guns",
+          desc: "Rifles and submachine guns captured from Japanese and French forces (1975).",
+        },
+        {
+          image: "/images/hienvat2.jpg",
+          title: "Lewis Machine Gun",
+          desc: "Used by the ‘Phan Dinh Phung’ Southern Advance Company during battles on the Bình Thuận battlefield, October 1945.",
+        },
+        {
+          image: "/images/hienvat3.jpg",
+          title: "The multi-shot crossbow (the Golden Turtle Divine Crossbow)",
+          desc: "A model of the multi-shot crossbow associated with the legend of An Duong Vuong and Co Loa Citadel (3rd century BC). This is regarded as the symbolic weapon of the Au Lac kingdom.",
+        },
+        {
+          image: "/images/hienvat4.jpg",
+          title: "Cannon",
+          desc: "This cannon model dates from the Nguyen Dynasty (19th century). The background depicts the Battle of Hue Citadel in 1885 and the resistance against the French.",
+        },
+        {
+          image: "/images/hienvat5.jpg",
+          title: "Military Jeep M151",
+          desc: "A vehicle model manufactured in the United States, which the Vietnamese army captured and used as war booty during the 1975 campaign to liberate the South.",
         },
       ],
 

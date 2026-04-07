@@ -68,7 +68,7 @@ export default function VideoCarousel() {
         <div ref={containerRef} className="w-full max-w-4xl mx-auto">
           {/* Video Container */}
 
-          <div className="relative rounded-2xl overflow-hidden shadow-lg h-[400px]">
+          <div className="relative rounded-2xl overflow-hidden shadow-lg h-[600px]">
             {videos.map((video, index) => (
               <iframe
                 key={video.id}

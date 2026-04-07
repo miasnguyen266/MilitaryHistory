@@ -38,7 +38,7 @@ export default function ArtifactSlider() {
         </h2>
 
         <div className="relative max-w-full mx-auto">
-          <div className="relative h-[450px] md:h-[500px] overflow-hidden rounded-3xl shadow-xl bg-black">
+          <div className="relative h-[450px] md:h-[600px] overflow-hidden rounded-3xl shadow-xl bg-black">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
