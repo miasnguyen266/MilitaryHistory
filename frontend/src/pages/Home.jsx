@@ -174,6 +174,7 @@ export default function Home() {
           <div className="text-center mt-16">
             <Link
               to="/timeline"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="inline-block !bg-[#c8102e] !text-white px-12 py-6 rounded-full font-bold text-lg hover:!bg-[#a00d25] transition shadow-2xl"
             >
               {t("home.timeline.view_all")}
@@ -245,6 +246,7 @@ export default function Home() {
           <div className="text-center mt-16">
             <Link
               to="/figures"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="inline-block !bg-[#c8102e] !text-white px-12 py-6 rounded-full font-bold text-lg hover:!bg-[#a00d25] transition shadow-2xl"
             >
               {lang === "en"
