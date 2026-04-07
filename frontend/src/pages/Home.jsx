@@ -116,7 +116,7 @@ export default function Home() {
           {loadingTimeline ? (
             <p className="text-center text-2xl text-gray-600">{t("loading")}</p>
           ) : Array.isArray(timelineEvents) && timelineEvents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
               {timelineEvents.map((event, idx) => {
                 const title =
                   lang === "en"

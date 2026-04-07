@@ -206,7 +206,7 @@ export default function AdminEvents() {
             placeholder="Năm hiển thị (VI) - ví dụ: 221 TCN"
             value={formData.year_display_vi}
             onChange={handleChange}
-            className="p-4 border rounded-lg"
+            className="p-4 border rounded-lg w-full"
             required
           />
 

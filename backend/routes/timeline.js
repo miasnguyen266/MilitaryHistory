@@ -6,9 +6,19 @@ const auth = require("../middleware/auth"); // Nếu bạn có middleware auth
 // GET all events - đã sắp xếp theo event_date tăng dần
 router.get("/", async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      "SELECT * FROM TimelineEvents ORDER BY event_year ASC",
-    );
+    const limit = parseInt(req.query.limit);
+
+    let query = "SELECT * FROM TimelineEvents ORDER BY event_year ASC";
+    let params = [];
+
+    if (!isNaN(limit) && limit > 0) {
+      query += " LIMIT ?";
+      params.push(limit);
+    }
+
+    const [rows] = await pool.query(query, params);
+
+    // ✅ trả về array như cũ
     res.json(rows);
   } catch (err) {
     console.error("Lỗi GET all events:", err);

@@ -107,7 +107,7 @@ export default function Timeline() {
                       <img
                         src={event.image_url}
                         alt={title}
-                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
                   )}
