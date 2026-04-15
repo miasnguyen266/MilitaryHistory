@@ -1,8 +1,8 @@
 // src/api/axiosConfig.js
-import axios from 'axios';
+import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
 });
 
 export default apiClient;

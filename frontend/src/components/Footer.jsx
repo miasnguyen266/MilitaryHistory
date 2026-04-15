@@ -12,9 +12,8 @@ export default function Footer() {
 
   const militaryMuseums = [
     {
-      name: "Bảo tàng Lịch sử Quân sự Việt Nam",
-      address:
-        "Km 6+500 Đại lộ Thăng Long, Phường Tây Mỗ, Quận Nam Từ Liêm, Hà Nội",
+      nameKey: "footer.museum_name",
+      addressKey: "footer.museum.address",
       mapEmbed:
         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.5!2d105.75!3d21.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjEuMCwgMTA1Ljc1!5e0!3m2!1svi!2sVN!4v1234567890",
       link: "https://maps.app.goo.gl/111J5LwjVMnyEKyV6",
@@ -28,25 +27,21 @@ export default function Footer() {
           {/* Cột 1: Giới thiệu */}
           <div className="lg:col-span-4">
             <h3 className="text-2xl font-bold mb-4">
-              Bảo Tàng Lịch Sử Quân Sự Việt Nam
+              {t("footer.museum.title")}
             </h3>
             <p className="text-gray-300 leading-relaxed">
-              Nơi lưu giữ và tôn vinh những giá trị lịch sử, văn hóa và truyền
-              thống anh hùng của dân tộc.
+              {t("footer.museum.intro")}
             </p>
             <div className="mt-6 text-sm">
-              <p className="font-medium">Địa chỉ chính:</p>
-              <p className="text-gray-200">
-                Km 6+500 Đại lộ Thăng Long, phường Tây Mỗ và Đại Mỗ, quận Nam Từ
-                Liêm, thành phố Hà Nội
-              </p>
+              <p className="font-medium">{t("footer.address_label")}:</p>
+              <p className="text-gray-200">{t("footer.museum.address")}</p>
             </div>
           </div>
 
           {/* Cột 2: Accordion bảo tàng quân sự */}
           <div className="lg:col-span-5">
             <h3 className="text-2xl font-bold mb-6">
-              Các bảo tàng quân sự tiêu biểu
+              {t("footer.military_museums.title")}
             </h3>
 
             <div className="space-y-4">
@@ -59,7 +54,7 @@ export default function Footer() {
                     onClick={() => toggleAccordion(index)}
                     className="w-full px-6 py-4 flex justify-between items-center text-left hover:bg-white/5 transition-colors"
                   >
-                    <span className="font-semibold">{museum.name}</span>
+                    <span className="font-semibold">{t(museum.nameKey)}</span>
                     <span
                       className={`transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""}`}
                     >
@@ -72,7 +67,7 @@ export default function Footer() {
                   >
                     <div className="px-6 pb-6">
                       <p className="text-gray-300 text-sm mb-4">
-                        {museum.address}
+                        {t(museum.addressKey)}
                       </p>
                       <div className="rounded-xl overflow-hidden mb-4 shadow-inner">
                         <iframe
@@ -83,7 +78,7 @@ export default function Footer() {
                           allowFullScreen=""
                           loading="lazy"
                           referrerPolicy="no-referrer-when-downgrade"
-                          title={museum.name}
+                          title={t(museum.nameKey)}
                         />
                       </div>
                       <a
@@ -92,7 +87,7 @@ export default function Footer() {
                         rel="noopener noreferrer"
                         className="text-blue-400 hover:text-blue-300 text-sm inline-flex items-center gap-1"
                       >
-                        Xem vị trí đầy đủ trên Google Maps →
+                        {t("footer.view_location")}
                       </a>
                     </div>
                   </div>
@@ -103,7 +98,7 @@ export default function Footer() {
 
           {/* Cột 3: Mạng xã hội & Liên hệ */}
           <div className="lg:col-span-3">
-            <h3 className="text-2xl font-bold mb-6">Kết nối với chúng tôi</h3>
+            <h3 className="text-2xl font-bold mb-6">{t("footer.connect")}</h3>
 
             <div className="flex flex-col gap-5 mb-10">
               <SocialLink
@@ -135,23 +130,24 @@ export default function Footer() {
 
             <div className="text-sm text-gray-300 space-y-2">
               <p>
-                <span className="font-medium text-white">Hotline:</span> 028
-                3824 9999
+                <span className="font-medium text-white">
+                  {t("footer.hotline_label")}:
+                </span>{" "}
+                {t("footer.hotline")}
               </p>
               <p>
-                <span className="font-medium text-white">Email:</span>{" "}
-                baotanglichsuquansuvietnam@gmail.com
+                <span className="font-medium text-white">
+                  {t("footer.email_label")}:
+                </span>{" "}
+                {t("footer.email")}
               </p>
-              <p>Giờ mở cửa: 8:00 – 16:30 (Thứ 3 – 5, Thứ 7-CN)</p>
+              <p>{t("footer.hours")}</p>
             </div>
           </div>
         </div>
 
         <div className="mt-16 pt-8 border-t border-white/20 text-center text-sm text-gray-400">
-          <p>
-            © {new Date().getFullYear()} Bảo Tàng Lịch Sử Việt Nam. All rights
-            reserved.
-          </p>
+          <p>{t("footer.copyright", { year: new Date().getFullYear() })}</p>
           <p className="mt-1">
             {t("footer.source") ||
               "Nguồn tài liệu từ các bảo tàng lịch sử và kho lưu trữ quốc gia"}

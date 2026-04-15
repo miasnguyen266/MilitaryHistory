@@ -3,6 +3,7 @@
 ## ✅ Các file đã sửa:
 
 ### Backend
+
 1. **`backend/server.js`**
    - ✅ Import `dotenv`
    - ✅ Thay hardcoded CORS origin thành `process.env.CORS_ORIGIN`
@@ -20,12 +21,13 @@
    - ✅ Thêm name, version, description
 
 4. **`backend/.gitignore`** (New)
-   - ✅ Ignore node_modules, .env, uploads/*
+   - ✅ Ignore node_modules, .env, uploads/\*
 
 5. **`backend/.env.example`** (New)
    - ✅ Template cho environment variables
 
 ### Frontend
+
 1. **`frontend/vite.config.js`**
    - ✅ Sử dụng `process.env.VITE_API_URL` trong proxy
 
@@ -39,6 +41,7 @@
    - ✅ Vercel configuration
 
 ### Root
+
 1. **`DEPLOYMENT_GUIDE.md`** (New)
    - ✅ Hướng dẫn chi tiết deploy lên Vercel + Railway
 
@@ -47,6 +50,7 @@
 ## 🔑 Environment Variables cần thiết:
 
 ### Backend (Railway / Render)
+
 ```
 DB_HOST=
 DB_USER=
@@ -59,6 +63,7 @@ JWT_SECRET=your_secret_key
 ```
 
 ### Frontend (Vercel)
+
 ```
 VITE_API_URL=https://your-backend-url.railway.app
 ```
@@ -69,16 +74,18 @@ VITE_API_URL=https://your-backend-url.railway.app
 
 1. **Setup .env files locally** (copy from .env.example)
 2. **Test locally**:
+
    ```bash
    cd backend
    npm install
    npm start
-   
+
    # Terminal khác
    cd frontend
    npm install
    npm run dev
    ```
+
 3. **Push lên GitHub**
 4. **Deploy trên Vercel (Frontend) + Railway (Backend)**
 5. **Cấu hình Environment Variables trên Vercel/Railway Dashboards**
