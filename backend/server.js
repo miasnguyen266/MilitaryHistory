@@ -1,4 +1,5 @@
 // backend/server.js
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
@@ -7,7 +8,8 @@ const pool = require("./config/db");
 const app = express();
 
 // Middleware
-app.use(cors({ origin: "http://localhost:5173" }));
+const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:5173";
+app.use(cors({ origin: corsOrigin }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // hỗ trợ form data nếu cần sau này
 
@@ -72,7 +74,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Lỗi server nội bộ" });
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server chạy tại http://localhost:${PORT}`);
+  console.log(`Server chạy tại ${process.env.NODE_ENV === 'production' ? 'production' : 'http://localhost:' + PORT}`);
 });

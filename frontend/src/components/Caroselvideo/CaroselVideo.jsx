@@ -5,17 +5,17 @@ import { useTranslation } from "react-i18next";
 const videos = [
   {
     id: 1,
-    src: "https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1",
+    src: "https://www.youtube.com/embed/cSjffDVnDoU?enablejsapi=1",
     title: "Video 1",
   },
   {
     id: 2,
-    src: "https://www.youtube.com/embed/3JZ_D3ELwOQ?enablejsapi=1",
+    src: "https://www.youtube.com/embed/rHB7aQG72po?enablejsapi=1",
     title: "Video 2",
   },
   {
     id: 3,
-    src: "https://www.youtube.com/embed/tgbNymZ7vqY?enablejsapi=1",
+    src: "https://www.youtube.com/embed/_WxUwARzIy0?enablejsapi=1",
     title: "Video 3",
   },
 ];
@@ -40,16 +40,6 @@ export default function VideoCarousel() {
 
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % videos.length);
-    }, 30000); // 30s mỗi slide
-
-    return () => clearInterval(interval);
-  }, [isVisible]);
 
   const nextSlide = () => {
     setCurrent((prev) => (prev + 1) % videos.length);
